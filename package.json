@@ -16,5 +16,8 @@
     "express": "^4.17.1",
     "sqlite": "^4.0.21",
     "sqlite3": "^5.0.2"
+  },
+  "devDependencies": {
+    "jest": "^26.6.3"
   }
 }
