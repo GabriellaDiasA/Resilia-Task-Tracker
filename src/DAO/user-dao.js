@@ -42,4 +42,25 @@ export class UserDAO{
         })
     }
 
+    deleteUser(id){
+        return new Promise((resolve, reject) => {
+            id = parseInt(id);
+            if (typeof id == "number"){
+                this.db.run(
+                    "DELETE FROM USERS WHERE USERS.ID=?",
+                    [id],
+                    e => {
+                        if (e) {
+                            console.log("in Error");
+                            throw new Error(`Deletion error: ${e}`);
+                        } else {
+                            resolve(`User with ID ${id} successfully deleted.`);
+                        }
+                    }
+                )
+            } else {
+                reject(`Invalid ID`);
+            }
+        })
+    }
 }

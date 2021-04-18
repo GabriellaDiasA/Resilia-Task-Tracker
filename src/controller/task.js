@@ -11,41 +11,24 @@ const taskController = (app, db) => {
 
     const taskDAO = new TaskDAO(db)
 
-    app.get(`/${route}`, (req, res) => {
-        taskDAO.listTasks()
-        .then(result => res.send(result))
-        .catch(error => res.send(message(error)));
+    app.get(`/${route}`, async (req, res) => {
+        let data = await taskDAO.listTasks()
+        .catch(e => res.send(message(e)));
+        res.send(data);
     });
 
-    // app.get(`/${route}/:title`, (req, res) => {
-    //     res.send(db.tasks.filter(() => req.params.title));
-    // });
-
-    app.post(`/${route}`, (req, res) => {
+    app.post(`/${route}`, async (req, res) => {
         let task = new TaskModel(req.body)
-        taskDAO.insertTasks(task)
-        .then(result => res.send(result))
-        .catch(error => res.send(message(error)));
+        let data = await taskDAO.insertTasks(task)
+        .catch(e => res.send(message(e)));
+        res.send(data);
     });
 
-    app.delete(`/${route}/`, () => {
-
+    app.delete(`/${route}/:id`, async (req, res) => {
+        let data = await taskDAO.deleteTask(req.params.id)
+        .catch(e => res.send(message(e)));
+        res.send(message(data));
     });
-
-    // app.put(`/${route}/:name`, (req, res) => {
-    //     try{
-    //         for(let user in db.users){
-    //             if((db.users[user].name == req.params.name) && req.body.name && req.body.email && req.body.password){
-    //                 console.log(`User found: ${db.users[user].name}`);
-    //                 db.users[user] = req.body;
-    //             }
-    //         }
-    //         res.send(message(`Put request at user ${req.params.name} fulfilled!`));
-    //     }
-    //     catch {
-    //         res.send(message(`Put request failed.`));
-    //     }
-    // })
 }
 
 export default taskController;

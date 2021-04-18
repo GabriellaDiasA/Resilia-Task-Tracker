@@ -4,5 +4,6 @@ export class TaskModel{
         this.description = body.description;
         this.status = body.status;
         this.date = body.date;
+        this.id_user = body.id_user;
     }
 }
