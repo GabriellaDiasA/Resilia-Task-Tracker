@@ -3,11 +3,12 @@ export class TaskDAO{
         this.db = db;
     }
 
-    listTasks(){
+    listTasks(id_user){
         return new Promise((resolve, reject) => {
             if (this.db) {
                 this.db.all(
-                    "SELECT * FROM TASKS",
+                    "SELECT * FROM TASKS WHERE ID_USER = ?",
+                    [id_user],
                     (e, tasks) => {
                         if (e) {
                             throw new Error(`Error GET: ${e}`);

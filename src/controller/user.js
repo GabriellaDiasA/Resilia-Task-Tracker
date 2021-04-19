@@ -13,22 +13,31 @@ const userController = (app, db) => {
 
     // O termo async deve ficar aqui e não no userController como um todo! Interessante...
     app.get(`/${route}`, async (req, res) => {
-        let data = await userDAO.listUsers()
-        .catch(e => res.send(message(e)));
-        res.send(data);
+        try {
+            let data = await userDAO.listUsers()
+            res.send(data);
+        } catch (e) {
+            res.send(message(e));
+        }
     });
 
     app.post(`/${route}`, async (req, res) => {
-        let user = new UserModel(req.body);
-        let data = await userDAO.insertUsers(user)
-        .catch(e => res.send(message(e)));
-        res.send(data);
+        try {
+            let user = new UserModel(req.body);
+            let data = await userDAO.insertUsers(user)
+            res.send(data);
+        } catch (e) {
+            res.send(message(e));
+        }
     });
 
     app.delete(`/${route}/:id`, async (req, res) => {
-        let data = await userDAO.deleteUser(req.params.id)
-        .catch(e => res.send(message(e)));
-        res.send(message(data));
+        try {
+            let data = await userDAO.deleteUser(req.params.id)
+            res.send(message(data));
+        } catch (e) {
+            res.send(message(e));
+        }
     });
 }
 

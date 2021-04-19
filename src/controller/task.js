@@ -11,23 +11,32 @@ const taskController = (app, db) => {
 
     const taskDAO = new TaskDAO(db)
 
-    app.get(`/${route}`, async (req, res) => {
-        let data = await taskDAO.listTasks()
-        .catch(e => res.send(message(e)));
-        res.send(data);
+    app.get(`/${route}/:id_user`, async (req, res) => {
+        try {
+            let data = await taskDAO.listTasks(req.params.id_user)
+            res.send(data);
+        } catch (e) {
+            res.send(message(e));
+        }
     });
 
     app.post(`/${route}`, async (req, res) => {
-        let task = new TaskModel(req.body)
-        let data = await taskDAO.insertTasks(task)
-        .catch(e => res.send(message(e)));
-        res.send(data);
+        try {            
+            let task = new TaskModel(req.body)
+            let data = await taskDAO.insertTasks(task)
+            res.send(data);
+        } catch (e) {
+            res.send(message(e));
+        }
     });
 
     app.delete(`/${route}/:id`, async (req, res) => {
-        let data = await taskDAO.deleteTask(req.params.id)
-        .catch(e => res.send(message(e)));
-        res.send(message(data));
+        try {
+            let data = await taskDAO.deleteTask(req.params.id)
+            res.send(message(data));
+        } catch (e) {
+            res.send(message(e));
+        }
     });
 }
 

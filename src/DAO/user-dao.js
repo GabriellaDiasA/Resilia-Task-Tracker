@@ -51,7 +51,6 @@ export class UserDAO{
                     [id],
                     e => {
                         if (e) {
-                            console.log("in Error");
                             throw new Error(`Deletion error: ${e}`);
                         } else {
                             resolve(`User with ID ${id} successfully deleted.`);
