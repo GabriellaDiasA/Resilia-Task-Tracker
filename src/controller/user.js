@@ -14,7 +14,7 @@ const userController = (app, db) => {
     // O termo async deve ficar aqui e não no userController como um todo! Interessante...
     app.get(`/${route}`, async (req, res) => {
         try {
-            let data = await userDAO.listUsers()
+            let data = await userDAO.listUsers();
             res.send(data);
         } catch (e) {
             res.send(message(e));
