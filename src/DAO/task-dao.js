@@ -3,12 +3,51 @@ export class TaskDAO{
         this.db = db;
     }
 
-    listTasks(id_user){
+    listAllTasks(){
+        return new Promise((resolve, reject) => {
+            if (this.db) {
+                this.db.all(
+                    "SELECT * FROM TASKS",
+                    (e, tasks) => {
+                        if (e) {
+                            throw new Error(`Error GET: ${e}`);
+                        } else {
+                            resolve(tasks);
+                        }
+                    }
+                )
+            } else {
+                reject("Something went wrong with the database!");
+            }
+        })
+    }
+
+    listTasksByUser(id_user){
         return new Promise((resolve, reject) => {
             if (this.db) {
                 this.db.all(
                     "SELECT * FROM TASKS WHERE ID_USER = ?",
                     [id_user],
+                    (e, tasks) => {
+                        if (e) {
+                            throw new Error(`Error GET: ${e}`);
+                        } else {
+                            resolve(tasks);
+                        }
+                    }
+                )
+            } else {
+                reject("Something went wrong with the database!");
+            }
+        })
+    }
+
+    listTaskByID(id_task){
+        return new Promise((resolve, reject) => {
+            if (this.db) {
+                this.db.all(
+                    "SELECT * FROM TASKS WHERE ID = ?",
+                    [id_task],
                     (e, tasks) => {
                         if (e) {
                             throw new Error(`Error GET: ${e}`);
@@ -48,11 +87,10 @@ export class TaskDAO{
             id = parseInt(id);
             if (typeof id == "number"){
                 this.db.run(
-                    "DELETE FROM TASKS WHERE TASKS.ID=?",
+                    "DELETE FROM TASKS WHERE TASKS.ID = ?",
                     [id],
                     e => {
                         if (e) {
-                            console.log("in Error");
                             throw new Error(`Deletion error: ${e}`);
                         } else {
                             resolve(`Task with ID ${id} successfully deleted.`);
@@ -65,4 +103,26 @@ export class TaskDAO{
         })
     }
 
+    updateTask(id, task){
+        return new Promise((resolve, reject) => {
+            id = parseInt(id);
+            if (typeof id == "number" && task.title && task.description && task.status && task.date){
+                this.db.run(
+                    `UPDATE TASKS
+                     SET title = ?, description = ?, status = ?, date = ?
+                     WHERE TASKS.ID = ?`,
+                    [task.title, task.description, task.status, task.date, id],
+                    e => {
+                        if (e) {
+                            throw new Error(`Update error: ${e}`);
+                        } else {
+                            resolve(`Task with ID ${id} successfully updated.`);
+                        }
+                    }
+                )
+            } else {
+                reject(`Invalid ID`);
+            }
+        })
+    }
 }

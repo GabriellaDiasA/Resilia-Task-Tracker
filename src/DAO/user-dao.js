@@ -3,11 +3,31 @@ export class UserDAO{
         this.db = db;
     }
 
-    listUsers(){
+    listAllUsers(){
         return new Promise((resolve, reject) => {
             if (this.db) {
                 this.db.all(
                     "SELECT * FROM USERS",
+                    (e, users) => {
+                        if (e) {
+                            throw new Error(`Error GET: ${e}`);
+                        } else {
+                            resolve(users);
+                        }
+                    }
+                )
+            } else {
+                reject("Something went wrong with the database!");
+            }
+        })
+    }
+
+    listUserByID(id){
+        return new Promise((resolve, reject) => {
+            if (this.db) {
+                this.db.all(
+                    "SELECT * FROM USERS WHERE USERS.ID = ?",
+                    [id],
                     (e, users) => {
                         if (e) {
                             throw new Error(`Error GET: ${e}`);
@@ -54,6 +74,29 @@ export class UserDAO{
                             throw new Error(`Deletion error: ${e}`);
                         } else {
                             resolve(`User with ID ${id} successfully deleted.`);
+                        }
+                    }
+                )
+            } else {
+                reject(`Invalid ID`);
+            }
+        })
+    }
+
+    updateUser(id, user){
+        return new Promise((resolve, reject) => {
+            id = parseInt(id);
+            if (typeof id == "number" && user.name && user.email && user.password){
+                this.db.run(
+                    `UPDATE USERS
+                     SET NAME = ?, EMAIL = ?, PASSWORD = ?
+                     WHERE USERS.ID = ?`,
+                    [user.name, user.email, user.password, id],
+                    e => {
+                        if (e) {
+                            throw new Error(`Update error: ${e}`);
+                        } else {
+                            resolve(`User with ID ${id} successfully updated.`);
                         }
                     }
                 )
